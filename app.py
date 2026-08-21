@@ -25,7 +25,10 @@ def _d(value, fallback=None):
 
 def gate():
     """Простейшая защита паролем. Пароль берётся из st.secrets или env APP_PASSWORD."""
-    pwd = os.environ.get("APP_PASSWORD") or st.secrets.get("APP_PASSWORD", "")
+    try:
+        pwd = os.environ.get("APP_PASSWORD") or st.secrets.get("APP_PASSWORD", "")
+    except Exception:  # secrets.toml отсутствует — локальный запуск без пароля
+        pwd = os.environ.get("APP_PASSWORD", "")
     if not pwd or st.session_state.get("auth"):
         return True
     st.title("🦷 Мед. карты — форма 058/у")
